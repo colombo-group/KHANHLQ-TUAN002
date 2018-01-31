@@ -1,0 +1,36 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+body{
+	height: 2000px;
+}
+
+.right-box{
+	background-color: #333;
+	margin: auto;
+	height: 700px;
+	width: 40%;
+	top: 500px;
+	position: relative;
+}
+
+#almost-show{
+	background-color: orange;
+	height: 200px;
+}
+
+.GD1{
+	position: relative;
+	width: 100%;
+	top:50px;
+}
+
+.GD2{
+	position: fixed;
+}
+
+.GD3{
+	position: absolute;
+	width: 100%;
+}
