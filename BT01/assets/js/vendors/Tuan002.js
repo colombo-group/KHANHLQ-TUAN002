@@ -1,4 +1,4 @@
-$.fn.hello = function(options){
+$.fn.inner_float = function(options){
 
 	//Value of Top
 	var top='20px';
