@@ -1,9 +1,11 @@
 const puppeteer = require('puppeteer');
 const express = require('express');
 const bodyParser = require('body-parser');
+const sc = require('./script');
+const strtoarr = require('./strtoarr')
 
 
-
+// console.log(JSON.parse(script.split('|')[0]))
 // Create a new instance of express
 const app = express()
 
@@ -12,26 +14,25 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // Route that receives a POST request to /sms
 app.post('/', function (req, res) {
-    
-    res.set('Content-Type', 'text/plain');
-//   res.send(req.body);
+    
+    res.set('Content-Type', 'text/json');
+//   res.send(req.body);
 //use puppeteer
 
 puppeteer.launch().then(async browser => {
-  const page = await browser.newPage();
-
+  
+  // sc.exec(script);
 //Config request
-var request=req.body;
-console.log({'Request':request} );
-await page.goto(request.url)
-.then(async response =>{
-  var result = {};
-  var arrRQ = request.request.split(',');
-  await arrRQ.forEach(function (values) {
-    switch (values) {
+  let request=await req.body;
+  const page = await sc.exec(strtoarr.convert(request.script));
+  let result = {};
+  let arrRQ = request.request.split(',');
+  for(let i in arrRQ){
+    switch (arrRQ[i]) {
       case 'html':
-      page.content()
+        await page.content()
       .then(function (rs) {
+        console.log('Get HTML success!')
         result['html']=rs;
       }).catch(function (rs) {
         res.send({
@@ -39,14 +40,16 @@ await page.goto(request.url)
           message : 'Không thể get HTML'
         });
                 // process.exit(-1);
-              });;
+              });
       break;
       case 'header':
-      result['header']=response.headers();
+      console.log('Header OK')
+      result['header']=await response.headers();
       break;
       case 'cookie':
-      page.cookies()
+        await page.cookies()
       .then(function (rs) {
+        console.log('Cookie OK')
         result['cookie']=JSON.stringify(rs);
       }).catch(function (rs) {
         res.send({
@@ -59,24 +62,17 @@ await page.goto(request.url)
       default:
       console.log('\nWARNING: NOT FOUND: '+'"'+values+'"\n');
     }
-  })
-  await page.content();
-  //get cookies
-  await page.cookies();
+  }
+
   await browser.close();
   res.send({
     success : true,
     message : 'OK',
     data : result
   });
-})
-.catch(function () {
-  res.send({
-    success : false,
-    message : 'Không thể get URL'
-  });
-                  // process.exit(-1);
-                });
+  await console.log('Done!')
+  await browser.close();
+  // await process.exit(-1);
 //init result
 // await page.screenshot({path:'ok.png'});
 // await console.log('OK');
@@ -92,9 +88,9 @@ app.get('/',function (req,res) {
 })
 // Tell our app to listen on port 3000
 app.listen(3000, function (err) {
-    if (err) {
-        throw err
-    };
+    if (err) {
+        throw err
+    };
 
-    console.log('Server started on port 3000')
+    console.log('Server started on port 3000')
 });
