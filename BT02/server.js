@@ -37,24 +37,24 @@ puppeteer.launch().then(async browser => {
       }).catch(function (rs) {
         res.send({
           success : false,
-          message : 'Không thể get HTML'
+          message : 'Get HTML failed!'
         });
                 // process.exit(-1);
               });
       break;
       case 'header':
-      console.log('Header OK')
+      console.log('Get Header success!')
       result['header']=await response.headers();
       break;
       case 'cookie':
         await page.cookies()
       .then(function (rs) {
-        console.log('Cookie OK')
+        console.log('Get Cookie success!')
         result['cookie']=JSON.stringify(rs);
       }).catch(function (rs) {
         res.send({
           success : false,
-          message : 'Không thể get Cookie'
+          message : 'Get Cookie failed!'
         });
                 // process.exit(-1);
               });
