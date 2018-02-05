@@ -24,7 +24,9 @@ puppeteer.launch().then(async browser => {
   // sc.exec(script);
 //Config request
   let request=await req.body;
-  const page = await sc.exec(strtoarr.convert(request.script));
+  const RS = await sc.exec(strtoarr.convert(request.script));
+  const page = RS[0];
+  const response = RS[1];
   let result = {};
   let arrRQ = request.request.split(',');
   for(let i in arrRQ){
@@ -44,7 +46,7 @@ puppeteer.launch().then(async browser => {
       break;
       case 'header':
       console.log('Get Header success!')
-      result['header']=await response.headers();
+      result['header'] = await response.headers();
       break;
       case 'cookie':
         await page.cookies()

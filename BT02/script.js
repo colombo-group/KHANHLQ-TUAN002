@@ -4,13 +4,16 @@ exports.hello = (abc) =>{
 }
 exports.exec =async (script) =>{
 	return await puppeteer.launch({headless:true}).then(async browser => {
+		var result=[];
   		const page = await browser.newPage();
+  		result[0]=page;
 		for(let i in script){
 			switch (script[i].type) {
 				case 'visit':
 					await page.goto(script[i].url)
-						.then(function () {
+						.then(response => {
 							console.log('Visit success!')
+							result[1] = response
 						}, function () {
 							console.log('Visit failed!')
 						})
@@ -46,7 +49,7 @@ exports.exec =async (script) =>{
 					break;
 			}
 		}
-		return page;
+		return result;
 	});
 	
 }
